@@ -1,0 +1,25 @@
+@import './vars';
+
+body,
+input,
+button,
+textarea,
+a {
+  font-family: $fontFirst;
+  color: $ColorMain;
+  background: transparent;
+  font-size: $SizeMain;
+  text-decoration: none;
+}
+
+//Контейнеры
+.wrapper {
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+.--container {
+  max-width: $maxWidth + $widthPadding * 2;
+  margin: 0 auto;
+  padding: 0px $widthPadding;
+}
