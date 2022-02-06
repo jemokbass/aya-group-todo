@@ -1,24 +1,29 @@
-@import './vars';
-
 body,
 input,
 button,
 textarea,
 a {
   font-family: $fontFirst;
-  color: $ColorMain;
+  color: $ColorMainText;
   background: transparent;
   font-size: $SizeMain;
   text-decoration: none;
 }
 
 //Контейнеры
-.wrapper {
+body,
+#root,
+.app {
   width: 100%;
   min-height: 100%;
+  background: $ColorBackground;
+}
+
+.app {
   overflow: hidden;
 }
-.--container {
+
+.container {
   max-width: $maxWidth + $widthPadding * 2;
   margin: 0 auto;
   padding: 0px $widthPadding;
