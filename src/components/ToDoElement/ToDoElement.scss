@@ -1,0 +1,23 @@
+.todo-element {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__buttons {
+    width: 140px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      margin: auto;
+      font-size: 18px;
+      line-height: 0;
+    }
+  }
+}

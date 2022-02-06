@@ -1,0 +1,18 @@
+.day-container {
+  min-width: 600px;
+  background: $ColorSecondBackground;
+  border: 2px solid $ColorDecoration;
+  border-radius: 15px;
+  overflow: hidden;
+
+  &__title {
+    padding: 5px 20px;
+    color: $ColorWhite;
+    background: $ColorSecondDecoration;
+  }
+
+  &__inner {
+    padding: 25px;
+    color: $ColorText;
+  }
+}

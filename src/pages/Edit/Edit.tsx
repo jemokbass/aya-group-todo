@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 const Edit: FC = () => {
-  return <div className="edit">Edit</div>;
+  return <section className="edit">Edit</section>;
 };
 
 export default Edit;

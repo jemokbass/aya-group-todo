@@ -4,10 +4,21 @@ button,
 textarea,
 a {
   font-family: $fontFirst;
-  color: $ColorMainText;
+  color: $ColorText;
   background: transparent;
   font-size: $SizeMain;
   text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
 }
 
 //Контейнеры
@@ -16,7 +27,7 @@ body,
 .app {
   width: 100%;
   min-height: 100%;
-  background: $ColorBackground;
+  background: #1e1e1e;
 }
 
 .app {

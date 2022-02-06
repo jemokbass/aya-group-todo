@@ -1,0 +1,17 @@
+.button {
+  cursor: pointer;
+  display: block;
+  max-width: 200px;
+  width: 100%;
+  margin: 0 auto 20px;
+  padding: 2px 10px 3px;
+  color: $ColorBlack;
+  background: $ColorMainElement;
+  border: 1px solid $ColorMainBackground;
+  border-radius: 10px;
+  transition: all 0.3s ease-in 0s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
