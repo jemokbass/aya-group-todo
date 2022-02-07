@@ -2,6 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px 8px;
+  font-size: 18px;
+  color: $ColorBlack;
+  background: $ColorWhite;
+  border-radius: 12px;
 
   &__buttons {
     width: 140px;
@@ -19,5 +24,9 @@
       font-size: 18px;
       line-height: 0;
     }
+  }
+
+  + .todo-element {
+    margin: 20px 0 0;
   }
 }
