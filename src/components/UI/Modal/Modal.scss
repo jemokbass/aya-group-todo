@@ -1,0 +1,27 @@
+.modal {
+  z-index: 10;
+  position: fixed;
+  inset: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba($color: $ColorBlack, $alpha: 0.4);
+
+  &__container {
+    z-index: 11;
+    position: relative;
+    margin: auto;
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    color: $ColorBlack;
+    background: $ColorWhite;
+    border: 3px solid $ColorMainElement;
+    border-radius: 20px;
+  }
+
+  &__title {
+    text-align: center;
+  }
+}

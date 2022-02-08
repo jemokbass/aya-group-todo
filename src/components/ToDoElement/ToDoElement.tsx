@@ -14,7 +14,9 @@ const ToDoElement: FC<IToDoElementProps> = ({ children, moveUp, moveDown, remove
       <div className="todo-element__buttons">
         <Button onClick={moveUp}>↑</Button>
         <Button onClick={moveDown}>↓</Button>
-        <Button onClick={remove}>⨯</Button>
+        <Button onClick={remove} className="todo-element__cross">
+          ⨯
+        </Button>
       </div>
     </div>
   );

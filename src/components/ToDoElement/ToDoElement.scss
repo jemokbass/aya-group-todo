@@ -29,4 +29,8 @@
   + .todo-element {
     margin: 20px 0 0;
   }
+
+  &__cross.button {
+    background: $ColorRed;
+  }
 }

@@ -3,11 +3,12 @@ import { FC } from 'react';
 interface IButtonProps {
   type?: 'button' | 'submit';
   onClick?: () => void;
+  className?: string;
 }
 
-const Button: FC<IButtonProps> = ({ children, type = 'button', onClick }) => {
+const Button: FC<IButtonProps> = ({ children, type = 'button', onClick, className }) => {
   return (
-    <button className="button" type={type} onClick={onClick}>
+    <button className={`button${className ? ' ' + className : ''}`} type={type} onClick={onClick}>
       {children}
     </button>
   );
