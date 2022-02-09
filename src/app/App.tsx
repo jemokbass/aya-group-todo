@@ -1,21 +1,32 @@
-import { FC, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { FC, Suspense, useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
-import { Home, Edit } from './lazyRoutes';
+import { Home } from './lazyRoutes';
 import './App.scss';
-import { routes } from './routes';
+import React from 'react';
+
+interface IAppContext {
+  currentId: null | number;
+  setCurrentId: (id: number | null) => any;
+}
+
+export const IdContext = React.createContext<IAppContext | null>({
+  currentId: null,
+  setCurrentId: (id: number | null): any => {},
+});
 
 const App: FC = () => {
+  const [currentId, setCurrentId] = useState<number | null>(null);
+  const value: IAppContext = { currentId, setCurrentId };
+
   return (
-    <div className="app">
-      <Navbar />
-      <Suspense fallback={<div>Load...</div>}>
-        <Routes>
-          <Route path={routes.HOME} element={<Home />} />
-          <Route path={routes.EDIT} element={<Edit />} />
-        </Routes>
-      </Suspense>
-    </div>
+    <IdContext.Provider value={value}>
+      <div className="app">
+        <Navbar />
+        <Suspense fallback={<div>Load...</div>}>
+          <Home />
+        </Suspense>
+      </div>
+    </IdContext.Provider>
   );
 };
 

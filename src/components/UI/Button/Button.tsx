@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 interface IButtonProps {
   type?: 'button' | 'submit';
-  onClick?: () => void;
+  onClick?: (id?: any) => void;
   className?: string;
 }
 

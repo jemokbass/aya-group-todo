@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { FC, FormEventHandler } from 'react';
 
 interface IFormProps {
-  onSubmit: () => void;
+  onSubmit: FormEventHandler<HTMLFormElement>;
 }
 
 const Form: FC<IFormProps> = ({ children, onSubmit }) => {

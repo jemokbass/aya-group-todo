@@ -6,3 +6,7 @@ export interface IDataObj {
 }
 
 export interface IDataArr extends Array<IDataObj> {}
+
+export interface IAddTodo {
+  name: string;
+}

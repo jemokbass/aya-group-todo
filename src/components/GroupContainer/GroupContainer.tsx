@@ -3,7 +3,7 @@ import Button from '../UI/Button/Button';
 
 interface IGroupContainerProps {
   group: string;
-  addTodo: () => void;
+  addTodo: (id: number) => void;
 }
 
 const GroupContainer: FC<IGroupContainerProps> = ({ children, group, addTodo }) => {
