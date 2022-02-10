@@ -11,31 +11,41 @@ const Home: FC = () => {
     moveDown,
     moveUp,
     remove,
-    showModal,
-    openModal,
+    errors,
+    showToDoModal,
+    showGroupModal,
+    openToDoModal,
+    openGroupModal,
     data,
-    submitFormHandler,
-    toDoControls,
+    controls,
     typingHandler,
     isEdit,
     closeModal,
-    submitChangeFormHandler,
+    submitToDoHandler,
+    submitGroupHandler,
+    changeToDoHandler,
+    changeGroupHandler,
   } = useHome();
 
   return (
     <section className="home">
       <PageLayout>
         {data.map((item, dataId) => (
-          <DayContainer key={item.id} day={item.day}>
+          <DayContainer key={item.id} day={item.day} addGroup={() => openGroupModal(dataId, false)}>
             {item.group.map((group, groupId) => (
-              <GroupContainer group={group.name} addTodo={() => openModal(dataId, groupId, false)}>
+              <GroupContainer
+                key={group.id}
+                group={group.name}
+                addTodo={() => openToDoModal(dataId, false, groupId)}
+                onClick={() => openGroupModal(dataId, true, groupId, group.name)}
+              >
                 {group.children.map((child, childId) => (
                   <ToDoElement
                     key={child + childId}
                     moveUp={() => moveUp(child, dataId, groupId, childId)}
                     moveDown={() => moveDown(child, dataId, groupId, childId)}
                     remove={() => remove(dataId, groupId, childId)}
-                    onClick={() => openModal(dataId, groupId, true, child)}
+                    onClick={() => openToDoModal(dataId, true, groupId, child)}
                   >
                     {child}
                   </ToDoElement>
@@ -46,11 +56,24 @@ const Home: FC = () => {
         ))}
       </PageLayout>
       <NewTodoModal
-        onSubmit={e => (isEdit ? submitChangeFormHandler(e) : submitFormHandler(e))}
-        showModal={showModal}
+        onSubmit={e => (isEdit ? changeToDoHandler(e) : submitToDoHandler(e))}
+        showModal={showToDoModal}
         onClose={e => closeModal(e)}
         onChange={e => typingHandler(e)}
-        value={toDoControls.name}
+        value={controls.name}
+        label="Enter title ToDo"
+        inputName="name"
+        errors={errors}
+      />
+      <NewTodoModal
+        onSubmit={e => (isEdit ? changeGroupHandler(e) : submitGroupHandler(e))}
+        showModal={showGroupModal}
+        onClose={e => closeModal(e)}
+        onChange={e => typingHandler(e)}
+        value={controls.group}
+        label="Enter title Group"
+        inputName="group"
+        errors={errors}
       />
     </section>
   );

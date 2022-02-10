@@ -5,6 +5,7 @@
   overflow: hidden;
 
   &__title {
+    cursor: pointer;
     padding: 5px 20px;
     font-size: 21px;
     color: $ColorWhite;

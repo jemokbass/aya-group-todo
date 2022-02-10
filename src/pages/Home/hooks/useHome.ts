@@ -5,20 +5,24 @@ import { IdContext } from '../../../app/App';
 import { mockData } from '../../../service/mockData';
 
 export const useHome = () => {
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showToDoModal, setShowToDoModal] = useState<boolean>(false);
+  const [showGroupModal, setShowGroupModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [data, setData] = useState<IDataArr>([]);
-  const [toDoControls, setToDoControls] = useState<IAddTodo>({ name: '' });
-  const [errors, setErrors] = useState({ name: '' });
+  const [controls, setControls] = useState<IAddTodo>({ name: '', group: '' });
+  const [errors, setErrors] = useState({ name: '', group: '' });
   const context = useContext(IdContext);
   const [toDoElement, setToDoElement] = useState('');
+  const [groupElement, setGroupElement] = useState('');
 
   const clearState = () => {
-    setShowModal(false);
+    setShowToDoModal(false);
+    setShowGroupModal(false);
     setToDoElement('');
+    setGroupElement('');
     setIsEdit(false);
-    setErrors({ name: '' });
-    setToDoControls({ name: '' });
+    setErrors({ name: '', group: '' });
+    setControls({ name: '', group: '' });
   };
 
   useEffect(() => {
@@ -37,10 +41,14 @@ export const useHome = () => {
   }, []);
 
   useEffect(() => {
-    if (isEdit && context?.currentDayId && toDoElement) {
-      setToDoControls({ name: toDoElement });
+    if (isEdit && toDoElement) {
+      setControls({ name: toDoElement, group: '' });
     }
-  }, [isEdit, context?.currentDayId, data, toDoElement]);
+
+    if (isEdit && groupElement) {
+      setControls({ name: '', group: groupElement });
+    }
+  }, [isEdit, context?.currentDayId, data, toDoElement, groupElement]);
 
   const typingHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const current = e.target.name;
@@ -54,15 +62,15 @@ export const useHome = () => {
       setErrors(prevState => ({ ...prevState, [current]: '' }));
     }
 
-    setToDoControls(prevState => ({ ...prevState, [current]: value }));
+    setControls(prevState => ({ ...prevState, [current]: value }));
   };
 
-  const submitFormHandler = (e: FormEvent<HTMLFormElement>) => {
+  const submitToDoHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { name } = toDoControls;
+    const { name } = controls;
     const newData = deepClone(data);
 
-    if (toDoControls.name.length > 0) {
+    if (controls.name.length > 0) {
       if (
         (context?.currentDayId || context?.currentDayId === 0) &&
         (context?.currentGroupId || context?.currentGroupId === 0)
@@ -75,12 +83,31 @@ export const useHome = () => {
     }
   };
 
-  const submitChangeFormHandler = (e: FormEvent<HTMLFormElement>) => {
+  const submitGroupHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { name } = toDoControls;
+    const { group } = controls;
     const newData = deepClone(data);
 
-    if (toDoControls.name.length > 0) {
+    if (controls.group.length > 0) {
+      if (context?.currentDayId || context?.currentDayId === 0) {
+        newData[context.currentDayId].group.push({
+          name: group,
+          id: Math.random(),
+          children: [],
+        });
+
+        setData([...newData]);
+        clearState();
+      }
+    }
+  };
+
+  const changeToDoHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { name } = controls;
+    const newData = deepClone(data);
+
+    if (controls.name.length > 0) {
       if (
         (context?.currentDayId || context?.currentDayId === 0) &&
         (context?.currentGroupId || context?.currentGroupId === 0)
@@ -89,6 +116,24 @@ export const useHome = () => {
           el => el === toDoElement
         );
         newData[context.currentDayId].group[context.currentGroupId].children.splice(index, 1, name);
+
+        setData([...newData]);
+        clearState();
+      }
+    }
+  };
+
+  const changeGroupHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { group } = controls;
+    const newData = deepClone(data);
+
+    if (controls.group.length > 0) {
+      if (context?.currentDayId || context?.currentDayId === 0) {
+        const index = data[context.currentDayId].group.findIndex(el => el.name === groupElement);
+        const { id, children } = data[context.currentDayId].group[index];
+
+        newData[context.currentDayId].group.splice(index, 1, { name: group, id, children: [...children] });
 
         setData([...newData]);
         clearState();
@@ -118,17 +163,21 @@ export const useHome = () => {
     } else return;
   };
 
-  const remove = (dataId: number, groupId: number, childId: number) => {
+  const remove = (dayId: number, groupId: number, childId: number) => {
     const newData = deepClone(data);
 
-    newData[dataId].group[groupId].children.splice(childId, 1);
+    newData[dayId].group[groupId].children.splice(childId, 1);
     setData(newData);
   };
 
-  const openModal = (dayId: number | null, groupId: number | null, edit: boolean, child?: string) => {
+  const openToDoModal = (dayId: number | null, edit: boolean, groupId: number | null, child?: string) => {
     context?.setCurrentDayId(dayId);
-    context?.setCurrentGroupId(groupId);
-    setShowModal(true);
+
+    if (groupId || groupId === 0) {
+      context?.setCurrentGroupId(groupId);
+    }
+
+    setShowToDoModal(true);
 
     if (edit && child) {
       setIsEdit(true);
@@ -136,23 +185,45 @@ export const useHome = () => {
     } else return;
   };
 
+  const openGroupModal = (dayId: number | null, edit: boolean, groupId?: number | null, child?: string) => {
+    context?.setCurrentDayId(dayId);
+
+    console.log(child);
+
+    if (groupId || groupId === 0) {
+      context?.setCurrentGroupId(groupId);
+    }
+
+    setShowGroupModal(true);
+
+    if (edit && child) {
+      setIsEdit(true);
+      setGroupElement(child);
+    } else return;
+  };
+
   const closeModal = (e: MouseEvent<HTMLElement>) => (e.target === e.currentTarget ? clearState() : null);
 
   return {
-    showModal,
-    openModal,
-    setShowModal,
+    showToDoModal,
+    showGroupModal,
+    openToDoModal,
+    openGroupModal,
+    setShowToDoModal,
+    setShowGroupModal,
     moveUp,
     moveDown,
     remove,
     data,
-    toDoControls,
+    controls,
     typingHandler,
     errors,
-    submitFormHandler,
     isEdit,
     setIsEdit,
     closeModal,
-    submitChangeFormHandler,
+    submitToDoHandler,
+    submitGroupHandler,
+    changeToDoHandler,
+    changeGroupHandler,
   };
 };

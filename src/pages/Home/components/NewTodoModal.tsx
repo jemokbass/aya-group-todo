@@ -4,7 +4,6 @@ import Form from '../../../components/UI/Form/Form';
 import Input from '../../../components/UI/Input/Input';
 import Label from '../../../components/UI/Label/Label';
 import Modal from '../../../components/UI/Modal/Modal';
-import { useHome } from '../hooks/useHome';
 
 interface INewTodoModalProps {
   showModal: boolean;
@@ -12,16 +11,26 @@ interface INewTodoModalProps {
   onSubmit: FormEventHandler<HTMLFormElement>;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   value: string;
+  label: string;
+  inputName: string;
+  errors: { [key: string]: string };
 }
 
-const NewTodoModal: FC<INewTodoModalProps> = ({ showModal, onClose, onSubmit, onChange, value }) => {
-  const { errors } = useHome();
-
+const NewTodoModal: FC<INewTodoModalProps> = ({
+  showModal,
+  onClose,
+  onSubmit,
+  onChange,
+  value,
+  label,
+  inputName,
+  errors,
+}) => {
   return (
     <Modal onClose={onClose} showModal={showModal} className="new-todo-modal" title="Add new ToDo">
       <Form onSubmit={onSubmit}>
-        <Label label="Enter ToDo text" error={errors.name}>
-          <Input onChange={onChange} value={value} name="name" />
+        <Label label={label} error={errors.name || errors.group}>
+          <Input onChange={onChange} value={value} name={inputName} />
         </Label>
         <Button type="submit">Save</Button>
       </Form>
