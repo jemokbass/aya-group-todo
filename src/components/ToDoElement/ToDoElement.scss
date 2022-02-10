@@ -8,8 +8,13 @@
   background: $ColorWhite;
   border-radius: 12px;
 
+  @media (max-width: 560px) {
+    flex-direction: column;
+    gap: 20px;
+  }
+
   &__buttons {
-    width: 140px;
+    min-width: 140px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,5 +41,6 @@
 
   &__title {
     cursor: pointer;
+    word-break: break-all;
   }
 }
