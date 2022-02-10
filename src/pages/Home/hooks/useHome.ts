@@ -1,77 +1,142 @@
-import { ChangeEvent, useState, FormEvent, useContext } from 'react';
+import { ChangeEvent, useState, FormEvent, useContext, useEffect, MouseEvent } from 'react';
 import { deepClone } from '../../../utils/deepClone';
 import { IDataArr, IAddTodo } from '../../../types/data.types';
 import { IdContext } from '../../../app/App';
+import { mockData } from '../../../service/mockData';
 
 export const useHome = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [data, setData] = useState<IDataArr>([
-    { day: 'today', group: 'Work', id: 1, children: ['Work after work', 'Rest', 'Have'] },
-    { day: 'Tomorrow', group: 'Work', id: 2, children: ['Work after work', 'Rest', 'Have'] },
-  ]);
-  const [controls, setControls] = useState<IAddTodo>({ name: '' });
-  const [errors, setErrors] = useState<IAddTodo>({ name: '' });
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [data, setData] = useState<IDataArr>([]);
+  const [toDoControls, setToDoControls] = useState<IAddTodo>({ name: '' });
+  const [errors, setErrors] = useState({ name: '' });
   const context = useContext(IdContext);
+  const [toDoElement, setToDoElement] = useState('');
+
+  const clearState = () => {
+    setShowModal(false);
+    setToDoElement('');
+    setIsEdit(false);
+    setErrors({ name: '' });
+    setToDoControls({ name: '' });
+  };
+
+  useEffect(() => {
+    if (
+      new Date() > new Date(mockData[0].date) &&
+      new Date(mockData[0].date).getDay() !== new Date().getDay()
+    ) {
+      mockData.unshift({
+        day: 'today',
+        group: [],
+        id: 3,
+        date: new Date().toDateString(),
+      });
+    }
+    setData(mockData);
+  }, []);
+
+  useEffect(() => {
+    if (isEdit && context?.currentDayId && toDoElement) {
+      setToDoControls({ name: toDoElement });
+    }
+  }, [isEdit, context?.currentDayId, data, toDoElement]);
 
   const typingHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const current = e.target.name;
     const value = e.target.value;
 
     if (value.trim().length < 1) {
-      return setErrors(prevState => ({ ...prevState, [current]: 'Please enter a value' }));
+      setErrors(prevState => ({ ...prevState, [current]: 'Please enter a value' }));
     }
 
-    setControls(prevState => ({ ...prevState, [current]: value }));
+    if (value.trim().length > 1) {
+      setErrors(prevState => ({ ...prevState, [current]: '' }));
+    }
+
+    setToDoControls(prevState => ({ ...prevState, [current]: value }));
   };
 
   const submitFormHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { name } = controls;
+    const { name } = toDoControls;
     const newData = deepClone(data);
 
-    console.log(context?.currentId);
+    if (toDoControls.name.length > 0) {
+      if (
+        (context?.currentDayId || context?.currentDayId === 0) &&
+        (context?.currentGroupId || context?.currentGroupId === 0)
+      ) {
+        newData[context.currentDayId].group[context.currentGroupId].children.push(name);
 
-    if (context?.currentId) {
-      newData[context.currentId].children.push(name);
-      setData(newData);
-      setControls({ name: '' });
-      setShowModal(false);
+        setData([...newData]);
+        clearState();
+      }
     }
   };
 
-  const moveUp = (item: string, index: number, idx: number) => {
+  const submitChangeFormHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { name } = toDoControls;
     const newData = deepClone(data);
 
-    if (idx > 0) {
-      newData[index].children.splice(idx, 1);
-      newData[index].children.splice(idx - 1, 0, item);
+    if (toDoControls.name.length > 0) {
+      if (
+        (context?.currentDayId || context?.currentDayId === 0) &&
+        (context?.currentGroupId || context?.currentGroupId === 0)
+      ) {
+        const index = data[context.currentDayId].group[context.currentGroupId].children.findIndex(
+          el => el === toDoElement
+        );
+        newData[context.currentDayId].group[context.currentGroupId].children.splice(index, 1, name);
+
+        setData([...newData]);
+        clearState();
+      }
+    }
+  };
+
+  const moveUp = (item: string, dataId: number, groupId: number, childId: number) => {
+    const newData = deepClone(data);
+
+    if (childId > 0) {
+      newData[dataId].group[groupId].children.splice(childId, 1);
+      newData[dataId].group[groupId].children.splice(childId - 1, 0, item);
 
       setData(newData);
     } else return;
   };
 
-  const moveDown = (item: string, index: number, idx: number) => {
+  const moveDown = (item: string, dataId: number, groupId: number, childId: number) => {
     const newData = deepClone(data);
 
-    if (idx < newData[index].children.length - 1) {
-      newData[index].children.splice(idx, 1);
-      newData[index].children.splice(idx + 1, 0, item);
+    if (childId < newData[dataId].group[groupId].children.length - 1) {
+      newData[dataId].group[groupId].children.splice(childId, 1);
+      newData[dataId].group[groupId].children.splice(childId + 1, 0, item);
 
       setData(newData);
     } else return;
   };
 
-  const remove = (index: number, idx: number) => {
+  const remove = (dataId: number, groupId: number, childId: number) => {
     const newData = deepClone(data);
 
-    newData[index].children.splice(idx, 1);
+    newData[dataId].group[groupId].children.splice(childId, 1);
     setData(newData);
   };
 
-  const openModal = (id: number | null) => {
-    context?.setCurrentId(id);
+  const openModal = (dayId: number | null, groupId: number | null, edit: boolean, child?: string) => {
+    context?.setCurrentDayId(dayId);
+    context?.setCurrentGroupId(groupId);
     setShowModal(true);
+
+    if (edit && child) {
+      setIsEdit(true);
+      setToDoElement(child);
+    } else return;
   };
+
+  const closeModal = (e: MouseEvent<HTMLElement>) => (e.target === e.currentTarget ? clearState() : null);
 
   return {
     showModal,
@@ -81,9 +146,13 @@ export const useHome = () => {
     moveDown,
     remove,
     data,
-    controls,
+    toDoControls,
     typingHandler,
     errors,
     submitFormHandler,
+    isEdit,
+    setIsEdit,
+    closeModal,
+    submitChangeFormHandler,
   };
 };

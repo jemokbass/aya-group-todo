@@ -33,4 +33,8 @@
   &__cross.button {
     background: $ColorRed;
   }
+
+  &__title {
+    cursor: pointer;
+  }
 }

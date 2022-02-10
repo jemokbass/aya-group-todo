@@ -1,8 +1,13 @@
+export interface IGroupObj {
+  name: string;
+  children: string[];
+}
+
 export interface IDataObj {
   day: string;
-  group: string;
   id: number;
-  children: string[];
+  date: string;
+  group: IGroupObj[];
 }
 
 export interface IDataArr extends Array<IDataObj> {}

@@ -5,24 +5,29 @@ import './App.scss';
 import React from 'react';
 
 interface IAppContext {
-  currentId: null | number;
-  setCurrentId: (id: number | null) => any;
+  currentDayId: null | number;
+  setCurrentDayId: (id: number | null) => any;
+  currentGroupId: null | number;
+  setCurrentGroupId: (id: number | null) => any;
 }
 
 export const IdContext = React.createContext<IAppContext | null>({
-  currentId: null,
-  setCurrentId: (id: number | null): any => {},
+  currentDayId: null,
+  setCurrentDayId: (id: number | null): any => {},
+  currentGroupId: null,
+  setCurrentGroupId: (id: number | null): any => {},
 });
 
 const App: FC = () => {
-  const [currentId, setCurrentId] = useState<number | null>(null);
-  const value: IAppContext = { currentId, setCurrentId };
+  const [currentDayId, setCurrentDayId] = useState<number | null>(null);
+  const [currentGroupId, setCurrentGroupId] = useState<number | null>(null);
+  const value: IAppContext = { currentDayId, setCurrentDayId, currentGroupId, setCurrentGroupId };
 
   return (
     <IdContext.Provider value={value}>
       <div className="app">
         <Navbar />
-        <Suspense fallback={<div>Load...</div>}>
+        <Suspense fallback={<div className="app__loading">Load...</div>}>
           <Home />
         </Suspense>
       </div>

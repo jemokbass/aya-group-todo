@@ -5,12 +5,15 @@ interface IToDoElementProps {
   moveUp: () => void;
   moveDown: () => void;
   remove: () => void;
+  onClick: () => void;
 }
 
-const ToDoElement: FC<IToDoElementProps> = ({ children, moveUp, moveDown, remove }) => {
+const ToDoElement: FC<IToDoElementProps> = ({ children, moveUp, moveDown, remove, onClick }) => {
   return (
     <div className="todo-element">
-      <p className="todo-element__title">{children}</p>
+      <p className="todo-element__title" onClick={onClick}>
+        {children}
+      </p>
       <div className="todo-element__buttons">
         <Button onClick={moveUp}>↑</Button>
         <Button onClick={moveDown}>↓</Button>

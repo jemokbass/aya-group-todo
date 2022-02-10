@@ -1,4 +1,4 @@
-import { FC, MouseEvent } from 'react';
+import { FC, MouseEvent, FormEventHandler, ChangeEvent } from 'react';
 import Button from '../../../components/UI/Button/Button';
 import Form from '../../../components/UI/Form/Form';
 import Input from '../../../components/UI/Input/Input';
@@ -9,16 +9,19 @@ import { useHome } from '../hooks/useHome';
 interface INewTodoModalProps {
   showModal: boolean;
   onClose: (e: MouseEvent<HTMLElement>) => void;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  value: string;
 }
 
-const NewTodoModal: FC<INewTodoModalProps> = ({ showModal, onClose }) => {
-  const { typingHandler, controls, errors, submitFormHandler } = useHome();
+const NewTodoModal: FC<INewTodoModalProps> = ({ showModal, onClose, onSubmit, onChange, value }) => {
+  const { errors } = useHome();
 
   return (
     <Modal onClose={onClose} showModal={showModal} className="new-todo-modal" title="Add new ToDo">
-      <Form onSubmit={e => submitFormHandler(e)}>
+      <Form onSubmit={onSubmit}>
         <Label label="Enter ToDo text" error={errors.name}>
-          <Input onChange={e => typingHandler(e)} value={controls.name} name="name" />
+          <Input onChange={onChange} value={value} name="name" />
         </Label>
         <Button type="submit">Save</Button>
       </Form>
