@@ -36,6 +36,7 @@ export const useHome = (date: Date | null) => {
 
       if (!data.filter(item => new Date(item.date).getDay() === date.getDay()).length) {
         setData(prevState => [...prevState, newData]);
+        setData(prevState => [...prevState.sort(item => +new Date(item.date) - +new Date(date))]);
       }
     },
     [data]
@@ -45,7 +46,7 @@ export const useHome = (date: Date | null) => {
     if (date) {
       enterDate(date);
     }
-  }, [enterDate, date]);
+  }, [enterDate, date, setData]);
 
   useEffect(() => {
     if (isEdit && toDoElement) {
@@ -180,10 +181,17 @@ export const useHome = (date: Date | null) => {
     } else return;
   };
 
-  const remove = (dayId: number, groupId: number, childId: number) => {
+  const removeToDo = (dayId: number, groupId: number, childId: number) => {
     const newData = deepClone(data);
 
     newData[dayId].group[groupId].children.splice(childId, 1);
+    setData(newData);
+  };
+
+  const removeGroup = (dayId: number, groupId: number) => {
+    const newData = deepClone(data);
+
+    newData[dayId].group.splice(groupId, 1);
     setData(newData);
   };
 
@@ -228,7 +236,8 @@ export const useHome = (date: Date | null) => {
     setShowGroupModal,
     moveUp,
     moveDown,
-    remove,
+    removeToDo,
+    removeGroup,
     data,
     controls,
     typingHandler,

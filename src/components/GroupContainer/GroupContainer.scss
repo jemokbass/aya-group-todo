@@ -4,12 +4,19 @@
   border-radius: 15px;
   overflow: hidden;
 
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    background: $ColorDecoration;
+  }
+
   &__title {
     cursor: pointer;
     padding: 5px 20px;
     font-size: 21px;
     color: $ColorWhite;
-    background: $ColorDecoration;
     word-break: break-all;
   }
 
@@ -21,5 +28,18 @@
 
   & + .group-container {
     margin: 30px 0 0;
+  }
+
+  &__cross.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    margin: auto 20px auto auto;
+    font-size: 18px;
+    line-height: 0;
+    background: $ColorRed;
   }
 }

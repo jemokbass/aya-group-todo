@@ -7,14 +7,15 @@ import { useHome } from './hooks/useHome';
 import NewTodoModal from './components/NewTodoModal';
 
 interface IHomeProps {
-  date: Date| null
+  date: Date | null;
 }
 
-const Home: FC<IHomeProps> = ({date}) => {
+const Home: FC<IHomeProps> = ({ date }) => {
   const {
     moveDown,
     moveUp,
-    remove,
+    removeToDo,
+    removeGroup,
     errors,
     showToDoModal,
     showGroupModal,
@@ -42,13 +43,14 @@ const Home: FC<IHomeProps> = ({date}) => {
                 group={group.name}
                 addTodo={() => openToDoModal(dataId, false, groupId)}
                 onClick={() => openGroupModal(dataId, true, groupId, group.name)}
+                remove={() => removeGroup(dataId, groupId)}
               >
                 {group.children.map((child, childId) => (
                   <ToDoElement
                     key={child + childId}
                     moveUp={() => moveUp(child, dataId, groupId, childId)}
                     moveDown={() => moveDown(child, dataId, groupId, childId)}
-                    remove={() => remove(dataId, groupId, childId)}
+                    remove={() => removeToDo(dataId, groupId, childId)}
                     onClick={() => openToDoModal(dataId, true, groupId, child)}
                   >
                     {child}
