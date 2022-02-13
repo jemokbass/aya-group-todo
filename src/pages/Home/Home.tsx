@@ -6,7 +6,11 @@ import ToDoElement from '../../components/ToDoElement/ToDoElement';
 import { useHome } from './hooks/useHome';
 import NewTodoModal from './components/NewTodoModal';
 
-const Home: FC = () => {
+interface IHomeProps {
+  date: Date| null
+}
+
+const Home: FC<IHomeProps> = ({date}) => {
   const {
     moveDown,
     moveUp,
@@ -25,7 +29,7 @@ const Home: FC = () => {
     submitGroupHandler,
     changeToDoHandler,
     changeGroupHandler,
-  } = useHome();
+  } = useHome(date);
 
   return (
     <section className="home">

@@ -21,14 +21,15 @@ export const IdContext = React.createContext<IAppContext | null>({
 const App: FC = () => {
   const [currentDayId, setCurrentDayId] = useState<number | null>(null);
   const [currentGroupId, setCurrentGroupId] = useState<number | null>(null);
+  const [date, setDate] = useState<Date | null>(null);
   const value: IAppContext = { currentDayId, setCurrentDayId, currentGroupId, setCurrentGroupId };
 
   return (
     <IdContext.Provider value={value}>
       <div className="app">
-        <Navbar />
+        <Navbar onDate={(date) => setDate(date)} />
         <Suspense fallback={<div className="app__loading">Load...</div>}>
-          <Home />
+          <Home date={date} />
         </Suspense>
       </div>
     </IdContext.Provider>

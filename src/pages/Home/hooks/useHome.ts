@@ -1,10 +1,9 @@
-import { ChangeEvent, useState, FormEvent, useContext, useEffect, MouseEvent } from 'react';
+import { ChangeEvent, useState, FormEvent, useContext, useEffect, MouseEvent, useCallback } from 'react';
 import { deepClone } from '../../../utils/deepClone';
 import { IDataArr, IAddTodo } from '../../../types/data.types';
 import { IdContext } from '../../../app/App';
-import { mockData } from '../../../service/mockData';
 
-export const useHome = () => {
+export const useHome = (date: Date | null) => {
   const [showToDoModal, setShowToDoModal] = useState<boolean>(false);
   const [showGroupModal, setShowGroupModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -14,6 +13,7 @@ export const useHome = () => {
   const context = useContext(IdContext);
   const [toDoElement, setToDoElement] = useState('');
   const [groupElement, setGroupElement] = useState('');
+  const localeData = localStorage.getItem('data');
 
   const clearState = () => {
     setShowToDoModal(false);
@@ -25,20 +25,27 @@ export const useHome = () => {
     setControls({ name: '', group: '' });
   };
 
-  useEffect(() => {
-    if (
-      new Date() > new Date(mockData[0].date) &&
-      new Date(mockData[0].date).getDay() !== new Date().getDay()
-    ) {
-      mockData.unshift({
-        day: 'today',
+  const enterDate = useCallback(
+    (date: Date) => {
+      const newData = {
+        day: date.toDateString(),
         group: [],
-        id: 3,
-        date: new Date().toDateString(),
-      });
+        id: Number(date),
+        date: date.toDateString(),
+      };
+
+      if (!data.filter(item => new Date(item.date).getDay() === date.getDay()).length) {
+        setData(prevState => [...prevState, newData]);
+      }
+    },
+    [data]
+  );
+
+  useEffect(() => {
+    if (date) {
+      enterDate(date);
     }
-    setData(mockData);
-  }, []);
+  }, [enterDate, date]);
 
   useEffect(() => {
     if (isEdit && toDoElement) {
@@ -49,6 +56,16 @@ export const useHome = () => {
       setControls({ name: '', group: groupElement });
     }
   }, [isEdit, context?.currentDayId, data, toDoElement, groupElement]);
+
+  useEffect(() => {
+    if (localeData) {
+      setData(JSON.parse(localeData));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('data', JSON.stringify(data));
+  }, [data]);
 
   const typingHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const current = e.target.name;
@@ -188,8 +205,6 @@ export const useHome = () => {
   const openGroupModal = (dayId: number | null, edit: boolean, groupId?: number | null, child?: string) => {
     context?.setCurrentDayId(dayId);
 
-    console.log(child);
-
     if (groupId || groupId === 0) {
       context?.setCurrentGroupId(groupId);
     }
@@ -225,5 +240,6 @@ export const useHome = () => {
     submitGroupHandler,
     changeToDoHandler,
     changeGroupHandler,
+    enterDate,
   };
 };
